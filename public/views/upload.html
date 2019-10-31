@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>Application</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="/static/css/weui.min.css"/>
+    <link rel="stylesheet" href="/static/css/app.min.css">
+</head>
+<body>
+<div class="container">
+    <div class="page">
+        <div class="weui-panel weui-panel_access">
+            <div class="weui-panel__hd">Upload a new version</div>
+        </div>
+        <div class="page__bd page__bd_spacing">
+            <form method="POST" action="/upload" enctype="multipart/form-data">
+            <div class="weui-cells weui-cells_form">
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <input name="file" class="weui-input" type="file" placeholder="Upload"/>
+                    </div>
+                </div>
+                <div class="weui-cell">
+                    <div class="weui-cell__bd">
+                        <textarea name="changelog" class="weui-textarea" placeholder="Change Log" rows="3"></textarea>
+                        <div class="weui-textarea-counter"><span>0</span>/200</div>
+                    </div>
+                </div>                
+            </div>
+            </form>
+            <a href="javascript:;" class="weui-btn weui-btn_primary upload-btn">Submit</a>
+        </div>
+    </div>
+    <div class="page">
+        <div class="weui-footer">
+            <p class="weui-footer__text">Copyright &copy; ipapk|<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>
+        </div>
+    </div>            
+</div>
+<script type="text/javascript">
+    const uploadBtn = document.querySelector('.upload-btn');
+    let uploading = false;
+    function upload() {
+        if (uploading) {
+            return;
+        }
+        uploading = true;
+        uploadBtn.className += ' weui-btn_disabled'
+
+        const formData = new FormData();
+
+        formData.append('file', document.querySelector('input[name=file]').files[0]);
+        formData.append('changelog', document.querySelector('textarea[name=changelog]').value);
+
+        const options = {
+            method: 'POST',
+            body: formData,
+        };
+
+        fetch('/upload', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(it => it.text())
+        .then(it => JSON.parse(it))
+        .then(it => {
+            location.href = `/bundle/${it.uuid}`;
+            uploading = false;
+        })
+        .catch(error => {
+            alert(error.message);
+            uploading = false;
+            uploadBtn.className = uploadBtn.className.split(' ').filter(it => it !== 'weui-btn_disabled').join(' ');
+        });
+    }
+    uploadBtn.addEventListener('click', upload);
+</script>
+</body>
+</html>

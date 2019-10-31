@@ -19,14 +19,17 @@ import (
 	"github.com/shogo82148/androidbinary/apk"
 )
 
-var reInfoPlist = regexp.MustCompile(`Payload/[^/]+/Info\.plist`)
+var (
+	reInfoPlist = regexp.MustCompile(`Payload/[^/]+/Info\.plist`)
+	ErrNoIcon   = errors.New("icon not found")
+)
 
 const (
 	iosExt     = ".ipa"
 	androidExt = ".apk"
 )
 
-type appInfo struct {
+type AppInfo struct {
 	Name     string
 	BundleId string
 	Version  string
@@ -49,7 +52,7 @@ type iosPlist struct {
 	CFBundleIdentifier   string `plist:"CFBundleIdentifier"`
 }
 
-func NewAppParser(name string) (*appInfo, error) {
+func NewAppParser(name string) (*AppInfo, error) {
 	file, err := os.Open(name)
 	if err != nil {
 		return nil, err
@@ -125,9 +128,9 @@ func parseAndroidManifest(xmlFile *zip.File) (*androidManifest, error) {
 	return manifest, nil
 }
 
-func parseApkFile(xmlFile *zip.File) (*appInfo, error) {
+func parseApkFile(xmlFile *zip.File) (*AppInfo, error) {
 	if xmlFile == nil {
-		return nil, errors.New("AndroidManifest.xml is not found")
+		return nil, errors.New("AndroidManifest.xml not found")
 	}
 
 	manifest, err := parseAndroidManifest(xmlFile)
@@ -135,7 +138,7 @@ func parseApkFile(xmlFile *zip.File) (*appInfo, error) {
 		return nil, err
 	}
 
-	info := new(appInfo)
+	info := new(AppInfo)
 	info.BundleId = manifest.Package
 	info.Version = manifest.VersionName
 	info.Build = manifest.VersionCode
@@ -154,7 +157,7 @@ func parseApkIconAndLabel(name string) (image.Image, string, error) {
 		Density: 720,
 	})
 	if icon == nil {
-		return nil, "", errors.New("Icon is not found")
+		return nil, "", ErrNoIcon
 	}
 
 	label, _ := pkg.Label(nil)
@@ -162,9 +165,9 @@ func parseApkIconAndLabel(name string) (image.Image, string, error) {
 	return icon, label, nil
 }
 
-func parseIpaFile(plistFile *zip.File) (*appInfo, error) {
+func parseIpaFile(plistFile *zip.File) (*AppInfo, error) {
 	if plistFile == nil {
-		return nil, errors.New("info.plist is not found")
+		return nil, errors.New("info.plist not found")
 	}
 
 	rc, err := plistFile.Open()
@@ -184,7 +187,7 @@ func parseIpaFile(plistFile *zip.File) (*appInfo, error) {
 		return nil, err
 	}
 
-	info := new(appInfo)
+	info := new(AppInfo)
 	if p.CFBundleDisplayName == "" {
 		info.Name = p.CFBundleName
 	} else {
@@ -199,7 +202,7 @@ func parseIpaFile(plistFile *zip.File) (*appInfo, error) {
 
 func parseIpaIcon(iconFile *zip.File) (image.Image, error) {
 	if iconFile == nil {
-		return nil, errors.New("Icon is not found")
+		return nil, ErrNoIcon
 	}
 
 	rc, err := iconFile.Open()

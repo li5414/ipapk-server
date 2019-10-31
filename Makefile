@@ -4,7 +4,7 @@ PLATFORMS := windows linux darwin
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
-	CGO_ENABLED=1 GO15VENDOREXPERIMENT=1 GOOS=$@ GOARCH=amd64 go build -ldflags "-X main.version=$(VERSION)" -o $(BINARY)-$(VERSION)-$@-amd64
+	CGO_ENABLED=1 GO15VENDOREXPERIMENT=1 GOOS=$@ GOARCH=amd64 go build -ldflags "-X main.version=$(VERSION)" -o $(BINARY)
 
 .PHONY: release
 release: windows linux darwin

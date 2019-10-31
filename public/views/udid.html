@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>内测应用分发服务</title>
+    <!-- 引入 WeUI -->
+    <link rel="stylesheet" href="/static/css/weui.min.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="page">
+        <div class="weui-media-box weui-media-box_text">
+            <div class="weui-media-box__bd">
+                <h4 class="weui-media-box__title">设备:{{ $.name }}</h4>
+                <h4 class="weui-media-box__title">UDID:{{ $.uuid }}</h4>
+            </div>
+        </div>
+        <div class="weui-footer weui-footer_fixed-bottom">
+            <p class="weui-footer__text">Copyright &copy; ipapk |<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

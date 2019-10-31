@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/phinexdaz/ipapk-server/conf"
-	"github.com/phinexdaz/ipapk-server/middleware"
-	"github.com/phinexdaz/ipapk-server/models"
-	"github.com/phinexdaz/ipapk-server/templates"
-	"github.com/phinexdaz/ipapk-server/utils"
+	"github.com/li5414/ipapk-server/conf"
+	"github.com/li5414/ipapk-server/middleware"
+	"github.com/li5414/ipapk-server/models"
+	"github.com/li5414/ipapk-server/templates"
+	"github.com/li5414/ipapk-server/utils"
 	"log"
 	"net/http"
 	"os"
@@ -20,11 +20,9 @@ func Init() {
 	if os.IsNotExist(err) {
 		os.MkdirAll(".data", 0755)
 	}
-
 	if err := utils.InitCA(); err != nil {
 		log.Fatal(err)
 	}
-
 	if err := conf.InitConfig("config.json"); err != nil {
 		log.Fatal(err)
 	}
@@ -45,7 +43,13 @@ func main() {
 	router.Static("static", "public/static")
 	router.StaticFile("myCA.cer", ".ca/myCA.cer")
 
+	router.GET("/udid/:udid/:name", middleware.ShowUDID)
+	router.POST("/udid", middleware.UDID)
 	router.POST("/upload", middleware.Upload)
+	router.GET("/", middleware.GetBundles)
+	router.GET("/ios", middleware.GetBundlesIOS)
+	router.GET("/android", middleware.GetBundlesAndroid)
+	// router.GET("/uploadPage", middleware.UploadPage)
 	router.GET("/bundle/:uuid", middleware.GetBundle)
 	router.GET("/log/:uuid", middleware.GetChangelog)
 	router.GET("/qrcode/:uuid", middleware.GetQRCode)

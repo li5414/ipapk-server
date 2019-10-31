@@ -67,6 +67,7 @@ type Bundle struct {
 	UUID         string `gorm:"unique_index"`
 	PlatformType BundlePlatformType
 	Name         string
+	FileName     string
 	BundleId     string
 	Version      string
 	Build        string
@@ -86,6 +87,27 @@ func GetBundleByUID(uuid string) (*Bundle, error) {
 
 	err := orm.Where("uuid = ?", uuid).Find(&bundle).Error
 	return &bundle, err
+}
+
+func GetBundles() ([]*Bundle, error) {
+	var bundles []*Bundle
+
+	err := orm.Raw("SELECT * FROM (SELECT * FROM bundles ORDER BY created_at DESC) GROUP BY bundle_id, platform_type ORDER BY created_at DESC").Scan(&bundles).Error
+	return bundles, err
+}
+
+func GetBundlesIOS() ([]*Bundle, error) {
+	var bundles []*Bundle
+
+	err := orm.Raw("SELECT * FROM (SELECT * FROM bundles WHERE platform_type = '2' ORDER BY created_at DESC) GROUP BY bundle_id, platform_type ORDER BY created_at DESC").Scan(&bundles).Error
+	return bundles, err
+}
+
+func GetBundlesAndroid() ([]*Bundle, error) {
+	var bundles []*Bundle
+
+	err := orm.Raw("SELECT * FROM (SELECT * FROM bundles WHERE platform_type = '1' ORDER BY created_at DESC) GROUP BY bundle_id, platform_type ORDER BY created_at DESC").Scan(&bundles).Error
+	return bundles, err
 }
 
 func (bundle *Bundle) UpdateBundle(field string, value interface{}) error {

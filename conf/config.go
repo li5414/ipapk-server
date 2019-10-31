@@ -3,7 +3,7 @@ package conf
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/phinexdaz/ipapk-server/utils"
+	"github.com/li5414/ipapk-server/utils"
 	"io/ioutil"
 )
 
@@ -41,4 +41,12 @@ func (c *Config) ProxyURL() string {
 		return fmt.Sprintf("https://%v:%v", localIp.String(), c.Port)
 	}
 	return c.Proxy
+}
+
+func (c *Config) BaseURL() string {
+	localIp, err := utils.LocalIP()
+	if err != nil {
+		panic(err)
+	}
+	return fmt.Sprintf("https://%v:%v", localIp.String(), c.Port)
 }
