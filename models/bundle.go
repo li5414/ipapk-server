@@ -76,6 +76,7 @@ type Bundle struct {
 	ChangeLog    string `gorm:"type:text"`
 	Downloads    uint64 `gorm:"default:0"`
 	CreatedAt    time.Time
+	Channel      string
 }
 
 func AddBundle(bundle *Bundle) error {
@@ -110,8 +111,15 @@ func GetBundlesAndroid() ([]*Bundle, error) {
 	return bundles, err
 }
 
+func GetBundlesByChannle(channel string,platform string)([]*Bundle, error) {
+	var bundles []*Bundle
+
+	err := orm.Raw("SELECT * FROM (SELECT * FROM bundles WHERE channel = ?  and platform_type= ? ORDER BY created_at DESC) GROUP BY bundle_id, platform_type ORDER BY created_at DESC", channel,platform).Scan(&bundles).Error
+	return bundles, err
+}
+
 func (bundle *Bundle) UpdateBundle(field string, value interface{}) error {
-	err := orm.Model(&bundle).Update(field, value).Error
+	err := orm.Model(&bundle).Update(	field, value).Error
 	return err
 }
 
@@ -137,7 +145,7 @@ func (bundle *Bundle) GetVersions() (VersionInfo, error) {
 	results := make(VersionInfo, 0)
 
 	rows, err := orm.Table("bundles").Select("version, count(DISTINCT build) AS builds").
-		Where("bundle_id = ? AND platform_type= ?", bundle.BundleId, int(bundle.PlatformType)).Group("version").Rows()
+		Where("bundle_id = ? AND platform_type= ? AND channel = ?", bundle.BundleId, int(bundle.PlatformType),bundle.Channel).Order("created_at desc").Group("version").Rows()
 	if err != nil {
 		return nil, err
 	}

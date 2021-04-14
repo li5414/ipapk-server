@@ -21,3 +21,17 @@ func InitDB() error {
 	orm.AutoMigrate(&Bundle{})
 	return nil
 }
+
+func RstartDB() error {
+	orm.Close()
+	var err error
+	orm, err = gorm.Open("sqlite3", conf.AppConfig.Database)
+	if err != nil {
+		return err
+	}
+	if gin.Mode() != "release" {
+		orm.LogMode(true)
+	}
+	orm.AutoMigrate(&Bundle{})
+	return nil
+}

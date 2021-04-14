@@ -4,7 +4,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/DHowett/go-plist"
+	"howett.net/plist"
 )
 
 const (

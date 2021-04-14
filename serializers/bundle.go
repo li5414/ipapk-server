@@ -4,6 +4,7 @@ type BundleJSON struct {
 	UUID       string `json:"uuid"`
 	Name       string `json:"name"`
 	Platform   string `json:"platform"`
+	Channel    string `json:"channel"`
 	BundleId   string `json:"bundleId"`
 	Version    string `json:"version"`
 	Build      string `json:"build"`

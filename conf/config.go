@@ -12,6 +12,8 @@ var AppConfig *Config
 type Config struct {
 	Host     string `json:"host"`
 	Port     string `json:"port"`
+	RemoteHost string `json:"remote"`
+	RemotePort string `json:"remotePort"`
 	Proxy    string `json:"proxy"`
 	Database string `json:"database"`
 }
@@ -30,6 +32,10 @@ func InitConfig(filename string) error {
 
 func (c *Config) Addr() string {
 	return fmt.Sprintf("%v:%v", c.Host, c.Port)
+}
+
+func (c *Config) RemoteAddr() string {
+	return fmt.Sprintf("https://%v:%v", c.RemoteHost, c.RemotePort)
 }
 
 func (c *Config) ProxyURL() string {

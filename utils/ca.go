@@ -26,7 +26,6 @@ func LocalIP() (net.IP, error) {
 	defer conn.Close()
 
 	localAddr := conn.LocalAddr().(*net.UDPAddr)
-
 	return localAddr.IP, nil
 }
 

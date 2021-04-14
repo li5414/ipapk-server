@@ -20,6 +20,7 @@
                     </div>
                     <div class="weui-media-box__bd">
                         <p class="weui-media-box__desc">应用名: {{ .bundle.Name }}</p>
+                        <p class="weui-media-box__desc">渠道: {{ .bundle.Channel }}</p>
                         <p class="weui-media-box__desc">版本: {{ .bundle.Version }} ({{ .bundle.Build }})</p>
                         <p class="weui-media-box__desc">平台: {{ .bundle.PlatformType }}</p>
                         <p class="weui-media-box__desc">大小: {{.bundle.Size | formatBinary }}</p>
@@ -55,12 +56,14 @@
 
             </div>
         </div>
-        <div class="page__bd page__bd_spacing">
-            <a href="{{ .installUrl | safeURL }}" class="weui-btn weui-btn_primary">在线安装</a>
-        </div>
-        <div class="weui-footer weui-footer_fixed-bottom">
-            <p class="weui-footer__text">Copyright &copy; ipapk |<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>
-        </div>
+        
+    </div>
+
+    <div class="page__bd page__bd_spacing">
+        <a href="{{ .installUrl | safeURL }}" class="weui-btn weui-btn_primary">在线安装</a>
+    </div>
+    <div class="weui-footer weui-footer_fixed-bottom">
+        <p class="weui-footer__text">Copyright &copy; ipapk |<a href="/myCA.cer" class="weui-footer__link">安装证书</a></p>
     </div>
 </div>
 </body>

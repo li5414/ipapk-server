@@ -13,7 +13,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/DHowett/go-plist"
+	"howett.net/plist"
 	"github.com/andrianbdn/iospng"
 	"github.com/shogo82148/androidbinary"
 	"github.com/shogo82148/androidbinary/apk"

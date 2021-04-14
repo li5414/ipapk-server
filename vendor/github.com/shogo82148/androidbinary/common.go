@@ -68,7 +68,7 @@ type ResStringPoolSpan struct {
 	FirstChar, LastChar uint32
 }
 
-// ResStringPool is a string pool resrouce.
+// ResStringPool is a string pool resource.
 type ResStringPool struct {
 	Header  ResStringPoolHeader
 	Strings []string
@@ -139,7 +139,7 @@ func readStringPool(sr *io.SectionReader) (*ResStringPool, error) {
 	for i, start := range stringStarts {
 		var str string
 		var err error
-		if _, err := sr.Seek(int64(sp.Header.StringStart+start), seekStart); err != nil {
+		if _, err := sr.Seek(int64(sp.Header.StringStart+start), io.SeekStart); err != nil {
 			return nil, err
 		}
 		if (sp.Header.Flags & UTF8Flag) == 0 {
@@ -155,7 +155,7 @@ func readStringPool(sr *io.SectionReader) (*ResStringPool, error) {
 
 	sp.Styles = make([]ResStringPoolSpan, sp.Header.StyleCount)
 	for i, start := range styleStarts {
-		if _, err := sr.Seek(int64(sp.Header.StylesStart+start), seekStart); err != nil {
+		if _, err := sr.Seek(int64(sp.Header.StylesStart+start), io.SeekStart); err != nil {
 			return nil, err
 		}
 		if err := binary.Read(sr, binary.LittleEndian, &sp.Styles[i]); err != nil {
@@ -167,7 +167,7 @@ func readStringPool(sr *io.SectionReader) (*ResStringPool, error) {
 }
 
 func readUTF16(sr *io.SectionReader) (string, error) {
-	// read lenth of string
+	// read length of string
 	size, err := readUTF16length(sr)
 	if err != nil {
 		return "", err
